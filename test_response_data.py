@@ -56,3 +56,6 @@ class TestResponseData:
         url = BASE_URL.format(country=country, postal_code=postal_code)
         response = requests.get(url)
         assert len(response.content) > 0, "ответ пустой и не содержит данных"
+
+    if __name__ == "__main__":
+        pytest.main(['-v', '--html=report.html'])

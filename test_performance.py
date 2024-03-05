@@ -27,3 +27,6 @@ class TestPerformanceRequests:
 
         assert response.status_code == 200
         assert execution_time < max_allowed_time, f"Запрос выполнился больше чем за : {execution_time} секунд"
+
+    if __name__ == "__main__":
+        pytest.main(['-v', '--html=report.html'])

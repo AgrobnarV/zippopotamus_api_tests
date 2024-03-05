@@ -39,3 +39,6 @@ class TestsSmoke:
     def test_invalid_url_format(self):
         response = requests.get(self.base_url + "invalid_url")
         assert response.status_code == 404
+
+    if __name__ == "__main__":
+        pytest.main(['-v', '--html=report.html'])
