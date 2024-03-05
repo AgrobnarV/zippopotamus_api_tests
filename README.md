@@ -1,2 +1,5 @@
-# zippopotamus_api_tests
- API тесты для проверки GET метода инфы о местоположении по почтовому индексу
+Cайт, который отдает информацию о местоположении по почтовому индексу
+https://api.zippopotam.us/#who
+
+Необходимо покрыть smoke сценариями следующую ручку
+GET https://api.zippopotam.us/{country}/{postal-code}

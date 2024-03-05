@@ -2,11 +2,15 @@
 
 import pytest
 import requests
+import allure
 
 BASE_URL = "https://api.zippopotam.us/{country}/{postal_code}"
 
 
+@allure.feature("API Testing")
+@allure.story("Response Content Tests")
 class TestRequestData:
+    @allure.title("Test Request Headers")
     @pytest.mark.parametrize("country, postal_code", [("us", "99950")])
     def test_request_headers(self, country, postal_code):
         url = BASE_URL.format(country=country, postal_code=postal_code)
@@ -17,7 +21,10 @@ class TestRequestData:
         assert "Date" in response.headers
 
 
+@allure.feature("API Testing")
+@allure.story("Response Data Tests")
 class TestResponseData:
+    @allure.title("Test Response Headers")
     @pytest.mark.parametrize("country, postal_code", [("ar", "1657")])
     def test_response_headers(self, country, postal_code):
         url = BASE_URL.format(country=country, postal_code=postal_code)
@@ -27,6 +34,7 @@ class TestResponseData:
         assert response.headers["Content-Encoding"] == "gzip", "запрос не поддерживает сжатие контента"
         assert response.headers['Charset'] == 'UTF-8', "неверная кодировка ответа"
 
+    @allure.title("Test Response Data")
     @pytest.mark.parametrize("country, postal_code", [("fr", "75001")])
     def test_response_data(self, country, postal_code):
         url = BASE_URL.format(country=country, postal_code=postal_code)
@@ -42,7 +50,7 @@ class TestResponseData:
         assert data['places'][0]['state abbreviation'] == 'A8'
         assert data['places'][0]['latitude'] == '48.8592'
 
-    # ответ не пустой
+    @allure.title("Test Response Size")
     @pytest.mark.parametrize("country, postal_code", [("br", "01000-000")])
     def test_response_size(self, country, postal_code):
         url = BASE_URL.format(country=country, postal_code=postal_code)
