@@ -5,7 +5,10 @@ import requests
 import time
 import allure
 
-BASE_URL = "https://api.zippopotam.us/{country}/{postal_code}"
+
+@pytest.fixture(scope="module")
+def base_url():
+    return "https://api.zippopotam.us/{country}/{postal_code}"
 
 
 @allure.feature("API Testing")
@@ -15,8 +18,8 @@ class TestPerformanceRequests:
     # время выполнение запроса
     @allure.title("Test API Performance")
     @pytest.mark.parametrize("country, postal_code", [("US", "10001"), ("sk", "900 84"), ("in", "854318")])
-    def test_api_performance(self, country, postal_code):
-        url = BASE_URL.format(country=country, postal_code=postal_code)
+    def test_api_performance(self, base_url, country, postal_code):
+        url = base_url.format(country=country, postal_code=postal_code)
 
         # сравниваем время запроса с пороговым значением в мс
         start_time = time.time()
@@ -27,6 +30,3 @@ class TestPerformanceRequests:
 
         assert response.status_code == 200
         assert execution_time < max_allowed_time, f"Запрос выполнился больше чем за : {execution_time} секунд"
-
-    if __name__ == "__main__":
-        pytest.main(['-v', '--html=report.html'])

@@ -4,7 +4,10 @@ import pytest
 import requests
 import allure
 
-BASE_URL = "https://api.zippopotam.us/{country}/{postal_code}"
+
+@pytest.fixture(scope="module")
+def base_url():
+    return "https://api.zippopotam.us/{country}/{postal_code}"
 
 
 @allure.feature("API Testing")
@@ -12,8 +15,8 @@ BASE_URL = "https://api.zippopotam.us/{country}/{postal_code}"
 class TestRequestData:
     @allure.title("Test Request Headers")
     @pytest.mark.parametrize("country, postal_code", [("us", "99950")])
-    def test_request_headers(self, country, postal_code):
-        url = BASE_URL.format(country=country, postal_code=postal_code)
+    def test_request_headers(self, base_url, country, postal_code):
+        url = base_url.format(country=country, postal_code=postal_code)
         response = requests.get(url)
         assert response.url == url, "URL заголовка Host отличается от URL запроса"
         assert response.request.headers["User-Agent"], "заголовок User-Agent отсутствует"
@@ -26,8 +29,8 @@ class TestRequestData:
 class TestResponseData:
     @allure.title("Test Response Headers")
     @pytest.mark.parametrize("country, postal_code", [("ar", "1657")])
-    def test_response_headers(self, country, postal_code):
-        url = BASE_URL.format(country=country, postal_code=postal_code)
+    def test_response_headers(self, base_url, country, postal_code):
+        url = base_url.format(country=country, postal_code=postal_code)
         response = requests.get(url)
 
         assert response.headers["Content-Type"] == "application/json", "неверный формат ответа"
@@ -36,8 +39,8 @@ class TestResponseData:
 
     @allure.title("Test Response Data")
     @pytest.mark.parametrize("country, postal_code", [("fr", "75001")])
-    def test_response_data(self, country, postal_code):
-        url = BASE_URL.format(country=country, postal_code=postal_code)
+    def test_response_data(self, base_url, country, postal_code):
+        url = base_url.format(country=country, postal_code=postal_code)
         response = requests.get(url)
         data = response.json()
         assert data['post code'] == '75001', "Некорректный индекс страны"
@@ -52,10 +55,7 @@ class TestResponseData:
 
     @allure.title("Test Response Size")
     @pytest.mark.parametrize("country, postal_code", [("br", "01000-000")])
-    def test_response_size(self, country, postal_code):
-        url = BASE_URL.format(country=country, postal_code=postal_code)
+    def test_response_size(self, base_url, country, postal_code):
+        url = base_url.format(country=country, postal_code=postal_code)
         response = requests.get(url)
         assert len(response.content) > 0, "ответ пустой и не содержит данных"
-
-    if __name__ == "__main__":
-        pytest.main(['-v', '--html=report.html'])
